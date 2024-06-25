@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Magical Fireworks Wonderland</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Arial', sans-serif;
+      color: #fff;
+    }
+    #settings {
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(15, 12, 41, 0.8);
+      padding: 20px;
+      border-radius: 15px;
+      display: none;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+    #toggleSettings {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 11;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      font-size: 16px;
+    }
+    #toggleSettings:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      transform: scale(1.05);
+    }
+    .colorOptionWrapper {
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .colorOption {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .colorOption:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    .colorOption::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 15px;
+      height: 15px;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .colorOption.selected::after {
+      opacity: 1;
+    }
+    canvas {
+      display: block;
+    }
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleSettings">Magic Wand 🪄</button>
+  <div id="settings">
+    <div>Choose Your Magic Colors:</div>
+    <div id="colorOptions"></div>
+    <br>
+    <label>
+      <input type="checkbox" id="glowToggle" checked> Glow Effect ✨
+    </label>
+    <label>
+      <input type="checkbox" id="soundToggle" checked> Magic Sounds 🔊
+    </label>
+  </div>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let fireworks = [];
+    let particles = [];
+    let glowEnabled = true;
+    let soundEnabled = true;
+    const maxParticles = 1000;
+
+    const vibrantColors = [
+      { color: '#FF1E00', selected: true },
+      { color: '#FF9A00', selected: true },
+      { color: '#FAFF00', selected: true },
+      { color: '#14FF00', selected: true },
+      { color: '#00FFFF', selected: true },
+      { color: '#00A6FF', selected: true },
+      { color: '#AA00FF', selected: true },
+      { color: '#FF00EA', selected: true }
+    ];
+
+    function generateColorOptions() {
+      const container = document.getElementById('colorOptions');
+      vibrantColors.forEach((item, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'colorOptionWrapper';
+        
+        const colorOption = document.createElement('div');
+        colorOption.className = 'colorOption' + (item.selected ? ' selected' : '');
+        colorOption.style.backgroundColor = item.color;
+        colorOption.onclick = function() {
+          item.selected = !item.selected;
+          this.classList.toggle('selected');
+        };
+
+        wrapper.appendChild(colorOption);
+        container.appendChild(wrapper);
+      });
+    }
+
+    document.getElementById('glowToggle').addEventListener('change', function() {
+      glowEnabled = this.checked;
+    });
+
+    document.getElementById('soundToggle').addEventListener('change', function() {
+      soundEnabled = this.checked;
+    });
+
+    document.getElementById('toggleSettings').addEventListener('click', function() {
+      const settingsPanel = document.getElementById('settings');
+      settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
+    });
+
+    function getRandomColor() {
+      const selectedColors = vibrantColors.filter(color => color.selected).map(color => color.color);
+      return selectedColors[Math.floor(Math.random() * selectedColors.length)] || '#FFFFFF';
+    }
+
+    class Firework {
+      constructor(x, y) {
+        this.x = x || Math.random() * canvas.width;
+        this.y = canvas.height;
+        this.targetY = y || Math.random() * (canvas.height * 0.5) + canvas.height * 0.1;
+        this.color = getRandomColor();
+        this.speed = 8;
+        this.size = 6;
+        this.velocity = {
+          x: 0,
+          y: -this.speed
+        };
+        this.brightness = 0;
+        this.alpha = 1;
+        this.pitch = 200 + Math.random() * 500; // Unique pitch for each firework
+      }
+
+      update() {
+        this.y += this.velocity.y;
+        this.brightness = Math.min(this.brightness + 0.015, 1);
+
+        if (this.y <= this.targetY) {
+          this.explode();
+          return false;
+        }
+        return true;
+      }
+
+      draw() {
+        ctx.save();
+        if (glowEnabled) {
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 20;
+        }
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.alpha;
+        ctx.fill();
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x, this.y + 30);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      explode() {
+        const particleCount = 150;
+        for (let i = 0; i < particleCount; i++) {
+          if (particles.length < maxParticles) {
+            particles.push(new Particle(this.x, this.y, this.color));
+          }
+        }
+        if (soundEnabled) explodeSound(this.pitch);
+      }
+    }
+
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.size = Math.random() * 8 + 4;
+        this.speed = Math.random() * 6 + 3;
+        this.angle = Math.random() * Math.PI * 2;
+        this.velocity = {
+          x: Math.cos(this.angle) * this.speed,
+          y: Math.sin(this.angle) * this.speed
+        };
+        this.gravity = 0.05;
+        this.friction = 0.99;
+        this.opacity = 1;
+      }
+
+      update() {
+        this.velocity.y += this.gravity;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.velocity.x *= this.friction;
+        this.velocity.y *= this.friction;
+        this.opacity -= 0.002;
+        this.size *= 0.997;
+
+        return this.opacity > 0 && this.size > 0.1;
+      }
+
+      draw() {
+        ctx.save();
+        if (glowEnabled) {
+          ctx.shadowColor = this.color;
+          ctx.shadowBlur = 15;
+        }
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function explodeSound(pitch) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(pitch * 0.5, audioCtx.currentTime + 0.5);
+
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+
+      oscillator.start(audioCtx.currentTime);
+      oscillator.stop(audioCtx.currentTime + 0.5);
+    }
+
+    function createFirework(x, y) {
+      fireworks.push(new Firework(x, y));
+    }
+
+    function animate() {
+      ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      fireworks = fireworks.filter(firework => firework.update());
+      fireworks.forEach(firework => firework.draw());
+      
+      particles = particles.filter(particle => particle.update());
+      particles.forEach(particle => particle.draw());
+
+      requestAnimationFrame(animate);
+    }
+
+    document.addEventListener('click', (event) => {
+      const settingsPanel = document.getElementById('settings');
+      if (!settingsPanel.contains(event.target) && event.target.id !== 'toggleSettings') {
+        createFirework(event.clientX, event.clientY);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+        createFirework();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    generateColorOptions();
+    animate();
+  </script>
+</body>
+</html>
