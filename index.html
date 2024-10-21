@@ -38,10 +38,12 @@
       backdrop-filter: blur(5px);
       font-size: 16px;
     }
-    #toggleSettings:hover {
+    #toggleSettings:hover,
+    #toggleSettings:focus {
       background: rgba(255, 255, 255, 0.3);
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
       transform: scale(1.05);
+      outline: none;
     }
     .colorOptionWrapper {
       display: inline-block;
@@ -57,10 +59,13 @@
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
+      background-color: transparent;
     }
-    .colorOption:hover {
+    .colorOption:hover,
+    .colorOption:focus {
       transform: scale(1.1);
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      outline: none;
     }
     .colorOption::after {
       content: '';
@@ -88,10 +93,38 @@
       display: block;
       margin-top: 10px;
     }
+    .colorOption:focus {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+    #statusMessage {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+      height: 1px;
+      width: 1px;
+      overflow: hidden;
+    }
+    /* Styles for radio buttons */
+    .fireworkLocationOption {
+      margin-right: 10px;
+    }
+    .fireworkLocationLabel {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    /* Styles for number of fireworks */
+    .fireworkCountLabel {
+      display: inline-block;
+      margin-right: 15px;
+    }
+    .fireworkCountOption {
+      margin-right: 10px;
+    }
   </style>
 </head>
 <body>
-  <button id="toggleSettings">Magic Wand 🪄</button>
+  <button id="toggleSettings" aria-label="Toggle settings panel">Magic Wand 🪄</button>
   <div id="settings">
     <div>Choose Your Magic Colors:</div>
     <div id="colorOptions"></div>
@@ -102,7 +135,30 @@
     <label>
       <input type="checkbox" id="soundToggle" checked> Magic Sounds 🔊
     </label>
+    <br>
+    <div>Firework appears:</div>
+    <label class="fireworkLocationLabel">
+      <input type="radio" name="fireworkLocation" value="click" class="fireworkLocationOption" checked> At touch or click point
+    </label>
+    <label class="fireworkLocationLabel">
+      <input type="radio" name="fireworkLocation" value="random" class="fireworkLocationOption"> In random location
+    </label>
+    <label class="fireworkLocationLabel">
+      <input type="radio" name="fireworkLocation" value="center" class="fireworkLocationOption"> Centered on screen
+    </label>
+    <br>
+    <div>Number of fireworks per activation:</div>
+    <label class="fireworkCountLabel">
+      <input type="radio" name="fireworkCount" value="1" class="fireworkCountOption" checked> 1
+    </label>
+    <label class="fireworkCountLabel">
+      <input type="radio" name="fireworkCount" value="2" class="fireworkCountOption"> 2
+    </label>
+    <label class="fireworkCountLabel">
+      <input type="radio" name="fireworkCount" value="3" class="fireworkCountOption"> 3
+    </label>
   </div>
+  <div id="statusMessage" aria-live="polite"></div>
   <canvas id="canvas"></canvas>
 
   <script>
@@ -116,6 +172,8 @@
     let glowEnabled = true;
     let soundEnabled = true;
     const maxParticles = 1000;
+    let fireworkLocation = 'click'; // Default location mode
+    let fireworkCount = 1; // Default number of fireworks per activation
 
     const vibrantColors = [
       { color: '#FF1E00', selected: true },
@@ -128,18 +186,30 @@
       { color: '#FF00EA', selected: true }
     ];
 
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
     function generateColorOptions() {
       const container = document.getElementById('colorOptions');
       vibrantColors.forEach((item, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'colorOptionWrapper';
-        
-        const colorOption = document.createElement('div');
+
+        const colorOption = document.createElement('button');
         colorOption.className = 'colorOption' + (item.selected ? ' selected' : '');
         colorOption.style.backgroundColor = item.color;
+        colorOption.setAttribute('aria-pressed', item.selected);
+        colorOption.setAttribute('aria-label', 'Toggle color ' + item.color);
         colorOption.onclick = function() {
           item.selected = !item.selected;
           this.classList.toggle('selected');
+          this.setAttribute('aria-pressed', item.selected);
+          announceStatus('Color ' + item.color + ' ' + (item.selected ? 'selected' : 'deselected') + '.');
+        };
+        colorOption.onkeydown = function(event) {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.click();
+          }
         };
 
         wrapper.appendChild(colorOption);
@@ -149,10 +219,12 @@
 
     document.getElementById('glowToggle').addEventListener('change', function() {
       glowEnabled = this.checked;
+      announceStatus('Glow effect ' + (this.checked ? 'enabled' : 'disabled') + '.');
     });
 
     document.getElementById('soundToggle').addEventListener('change', function() {
       soundEnabled = this.checked;
+      announceStatus('Magic sounds ' + (this.checked ? 'enabled' : 'disabled') + '.');
     });
 
     document.getElementById('toggleSettings').addEventListener('click', function() {
@@ -160,22 +232,50 @@
       settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
     });
 
+    document.getElementById('toggleSettings').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        this.click();
+      }
+    });
+
+    // Event listener for firework location options
+    document.querySelectorAll('input[name="fireworkLocation"]').forEach((elem) => {
+      elem.addEventListener('change', function() {
+        fireworkLocation = this.value;
+        announceStatus('Firework will appear ' + (this.value === 'click' ? 'at touch or click point.' : this.value === 'random' ? 'at random location.' : 'centered on screen.'));
+      });
+    });
+
+    // Event listener for firework count options
+    document.querySelectorAll('input[name="fireworkCount"]').forEach((elem) => {
+      elem.addEventListener('change', function() {
+        fireworkCount = parseInt(this.value);
+        announceStatus('Number of fireworks per activation set to ' + this.value + '.');
+      });
+    });
+
+    function announceStatus(message) {
+      const status = document.getElementById('statusMessage');
+      status.textContent = message;
+    }
+
     function getRandomColor() {
       const selectedColors = vibrantColors.filter(color => color.selected).map(color => color.color);
       return selectedColors[Math.floor(Math.random() * selectedColors.length)] || '#FFFFFF';
     }
 
     class Firework {
-      constructor(x, y) {
-        this.x = x || Math.random() * canvas.width;
+      constructor(x, y, offsetX = 0) {
+        this.x = x !== undefined ? x + offsetX : Math.random() * canvas.width;
         this.y = canvas.height;
-        this.targetY = y || Math.random() * (canvas.height * 0.5) + canvas.height * 0.1;
+        this.targetY = y !== undefined ? y : canvas.height * (0.2 + Math.random() * 0.5); // Random height between 20% and 70%
         this.color = getRandomColor();
-        this.speed = 8;
+        this.speed = 7 + Math.random() * 2; // Random speed between 7 and 9
         this.size = 6;
         this.velocity = {
-          x: 0,
-          y: -this.speed
+          x: (offsetX / 25) + (Math.random() - 0.5) * 1.5, // Slight random horizontal velocity
+          y: -this.speed + (Math.random() - 0.5) * 0.5 // Slight random variation in vertical speed
         };
         this.brightness = 0;
         this.alpha = 1;
@@ -183,6 +283,7 @@
       }
 
       update() {
+        this.x += this.velocity.x;
         this.y += this.velocity.y;
         this.brightness = Math.min(this.brightness + 0.015, 1);
 
@@ -215,7 +316,7 @@
       }
 
       explode() {
-        const particleCount = 150;
+        const particleCount = 100;
         for (let i = 0; i < particleCount; i++) {
           if (particles.length < maxParticles) {
             particles.push(new Particle(this.x, this.y, this.color));
@@ -248,8 +349,8 @@
         this.y += this.velocity.y;
         this.velocity.x *= this.friction;
         this.velocity.y *= this.friction;
-        this.opacity -= 0.002;
-        this.size *= 0.997;
+        this.opacity -= 0.004;
+        this.size *= 0.995;
 
         return this.opacity > 0 && this.size > 0.1;
       }
@@ -270,7 +371,6 @@
     }
 
     function explodeSound(pitch) {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
 
@@ -289,16 +389,44 @@
     }
 
     function createFirework(x, y) {
-      fireworks.push(new Firework(x, y));
+      let baseX, baseY;
+
+      if (fireworkLocation === 'click' && x !== undefined && y !== undefined) {
+        baseX = x;
+        baseY = y;
+      } else if (fireworkLocation === 'center') {
+        baseX = canvas.width / 2;
+        baseY = canvas.height / 2;
+      } else {
+        baseX = Math.random() * canvas.width;
+        baseY = undefined; // Let the Firework constructor decide targetY
+      }
+
+      // Calculate offsets to slightly separate fireworks
+      const offsets = [];
+      const spread = 60; // Total spread in pixels
+      const halfCount = (fireworkCount - 1) / 2;
+      for (let i = 0; i < fireworkCount; i++) {
+        let offset = 0;
+        if (fireworkCount > 1) {
+          offset = ((i - halfCount) / halfCount) * (spread / 2);
+          offset += (Math.random() - 0.5) * 20; // Add randomness
+        }
+        offsets.push(offset);
+      }
+
+      offsets.forEach(offsetX => {
+        fireworks.push(new Firework(baseX, baseY, offsetX));
+      });
     }
 
     function animate() {
       ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       fireworks = fireworks.filter(firework => firework.update());
       fireworks.forEach(firework => firework.draw());
-      
+
       particles = particles.filter(particle => particle.update());
       particles.forEach(particle => particle.draw());
 
@@ -308,12 +436,17 @@
     document.addEventListener('click', (event) => {
       const settingsPanel = document.getElementById('settings');
       if (!settingsPanel.contains(event.target) && event.target.id !== 'toggleSettings') {
-        createFirework(event.clientX, event.clientY);
+        if (fireworkLocation === 'click') {
+          createFirework(event.clientX, event.clientY);
+        } else {
+          createFirework();
+        }
       }
     });
 
     document.addEventListener('keydown', (event) => {
       if (event.code === 'Space') {
+        event.preventDefault();
         createFirework();
       }
     });
