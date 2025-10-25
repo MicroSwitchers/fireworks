@@ -12,90 +12,157 @@
       color: #fff;
     }
     #settings {
-      position: absolute;
-      top: 60px;
-      left: 20px;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      bottom: 20px;
       z-index: 10;
-      background: rgba(15, 12, 41, 0.8);
-      padding: 20px;
-      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(20, 20, 50, 0.95), rgba(40, 30, 60, 0.95));
+      padding: 30px;
+      border-radius: 20px;
       display: none;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
       color: #fff;
+      width: 380px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #settings::-webkit-scrollbar {
+      width: 8px;
+    }
+    #settings::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+    #settings::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+    #settings::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
     #toggleSettings {
       position: absolute;
       top: 20px;
-      left: 20px;
+      right: 20px;
       z-index: 11;
-      background: rgba(255, 255, 255, 0.2);
+      background: linear-gradient(135deg, rgba(120, 80, 255, 0.3), rgba(200, 100, 255, 0.3));
       color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 12px 24px;
+      border-radius: 30px;
       cursor: pointer;
       transition: all 0.3s ease;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
       font-size: 16px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(120, 80, 255, 0.3);
     }
     #toggleSettings:hover,
     #toggleSettings:focus {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-      transform: scale(1.05);
+      background: linear-gradient(135deg, rgba(140, 100, 255, 0.4), rgba(220, 120, 255, 0.4));
+      box-shadow: 0 6px 20px rgba(150, 100, 255, 0.5);
+      transform: translateY(-2px);
       outline: none;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .settings-section {
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .settings-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .settings-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     .colorOptionWrapper {
       display: inline-block;
-      margin-right: 10px;
-      margin-bottom: 10px;
+      margin-right: 8px;
+      margin-bottom: 8px;
     }
     .colorOption {
       display: inline-block;
-      width: 30px;
-      height: 30px;
-      border: 3px solid rgba(255, 255, 255, 0.5);
-      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
       position: relative;
       background-color: transparent;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
     .colorOption:hover,
     .colorOption:focus {
       transform: scale(1.1);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
       outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
     }
     .colorOption::after {
-      content: '';
+      content: '✓';
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 15px;
-      height: 15px;
-      background-color: white;
-      border-radius: 50%;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
       opacity: 0;
       transition: opacity 0.3s ease;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .colorOption.selected {
+      border-width: 3px;
+      border-color: rgba(255, 255, 255, 0.8);
     }
     .colorOption.selected::after {
       opacity: 1;
+    }
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
     }
     canvas {
       display: block;
     }
     input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
       margin-right: 10px;
+      cursor: pointer;
+      accent-color: #8855ff;
     }
-    label {
-      display: block;
-      margin-top: 10px;
+    .toggle-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .colorOption:focus {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
+    .toggle-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .toggle-option label {
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
     }
     #statusMessage {
       position: absolute;
@@ -105,58 +172,120 @@
       width: 1px;
       overflow: hidden;
     }
-    /* Styles for radio buttons */
-    .fireworkLocationOption {
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+    .radio-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .radio-option input[type="radio"] {
+      width: 18px;
+      height: 18px;
       margin-right: 10px;
+      cursor: pointer;
+      accent-color: #8855ff;
     }
-    .fireworkLocationLabel {
-      display: inline-block;
-      margin-right: 15px;
+    .radio-option.selected {
+      background: rgba(136, 85, 255, 0.2);
+      border-color: rgba(136, 85, 255, 0.5);
     }
-    /* Styles for number of fireworks */
-    .fireworkCountLabel {
-      display: inline-block;
-      margin-right: 15px;
-    }
-    .fireworkCountOption {
-      margin-right: 10px;
+    .radio-option label {
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      flex: 1;
     }
   </style>
 </head>
 <body>
-  <button id="toggleSettings" aria-label="Toggle settings panel">Magic Wand 🪄</button>
+  <button id="toggleSettings" aria-label="Toggle settings panel">⚙️ Settings</button>
   <div id="settings">
-    <div>Choose Your Magic Colors:</div>
-    <div id="colorOptions"></div>
-    <br>
-    <label>
-      <input type="checkbox" id="glowToggle" checked> Glow Effect ✨
-    </label>
-    <label>
-      <input type="checkbox" id="soundToggle" checked> Magic Sounds 🔊
-    </label>
-    <br>
-    <div>Firework appears:</div>
-    <label class="fireworkLocationLabel">
-      <input type="radio" name="fireworkLocation" value="click" class="fireworkLocationOption" checked> At touch or click point
-    </label>
-    <label class="fireworkLocationLabel">
-      <input type="radio" name="fireworkLocation" value="random" class="fireworkLocationOption"> In random location
-    </label>
-    <label class="fireworkLocationLabel">
-      <input type="radio" name="fireworkLocation" value="center" class="fireworkLocationOption"> Centered on screen
-    </label>
-    <br>
-    <div>Number of fireworks per activation:</div>
-    <label class="fireworkCountLabel">
-      <input type="radio" name="fireworkCount" value="1" class="fireworkCountOption" checked> 1
-    </label>
-    <label class="fireworkCountLabel">
-      <input type="radio" name="fireworkCount" value="2" class="fireworkCountOption"> 2
-    </label>
-    <label class="fireworkCountLabel">
-      <input type="radio" name="fireworkCount" value="3" class="fireworkCountOption"> 3
-    </label>
+    <div class="settings-section">
+      <div class="settings-title">🎨 Color Palette</div>
+      <div id="colorOptions" class="color-grid"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-title">✨ Effects</div>
+      <div class="toggle-option">
+        <input type="checkbox" id="glowToggle" checked>
+        <label for="glowToggle">Glow Effect</label>
+      </div>
+      <div class="toggle-option">
+        <input type="checkbox" id="soundToggle" checked>
+        <label for="soundToggle">Sound Effects</label>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-title">🌌 Background</div>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="backgroundType" value="starry" class="backgroundOption" id="bg-starry" checked>
+          <label for="bg-starry">Starry Night</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="backgroundType" value="solid-black" class="backgroundOption" id="bg-black">
+          <label for="bg-black">Solid Black</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="backgroundType" value="solid-blue" class="backgroundOption" id="bg-blue">
+          <label for="bg-blue">Deep Blue</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="backgroundType" value="solid-purple" class="backgroundOption" id="bg-purple">
+          <label for="bg-purple">Twilight Purple</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-title">🎯 Firework Position</div>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="fireworkLocation" value="click" class="fireworkLocationOption" id="pos-click" checked>
+          <label for="pos-click">Where You Click</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="fireworkLocation" value="random" class="fireworkLocationOption" id="pos-random">
+          <label for="pos-random">Random Location</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="fireworkLocation" value="center" class="fireworkLocationOption" id="pos-center">
+          <label for="pos-center">Center Screen</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-title">💥 Firework Count</div>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="fireworkCount" value="1" class="fireworkCountOption" id="count-1" checked>
+          <label for="count-1">Single (1)</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="fireworkCount" value="2" class="fireworkCountOption" id="count-2">
+          <label for="count-2">Double (2)</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="fireworkCount" value="3" class="fireworkCountOption" id="count-3">
+          <label for="count-3">Triple (3)</label>
+        </div>
+      </div>
+    </div>
   </div>
   <div id="statusMessage" aria-live="polite"></div>
   <canvas id="canvas"></canvas>
@@ -171,9 +300,60 @@
     let particles = [];
     let glowEnabled = true;
     let soundEnabled = true;
-    const maxParticles = 1000;
+    const maxParticles = 3000;
     let fireworkLocation = 'click'; // Default location mode
     let fireworkCount = 1; // Default number of fireworks per activation
+    let stars = [];
+    let screenShake = 0;
+    let backgroundType = 'starry'; // Options: 'starry', 'solid-black', 'solid-blue', 'solid-purple'
+
+    // Performance adaptive system
+    let pressTimestamps = [];
+    let fastDecayMode = false;
+    let decayMultiplier = 1;
+
+    // Beautiful effects
+    let shootingStars = [];
+    let time = 0;
+    let lastShootingStarTime = 0;
+
+    // Load saved preferences
+    function loadPreferences() {
+      const saved = localStorage.getItem('fireworksPreferences');
+      if (saved) {
+        try {
+          const prefs = JSON.parse(saved);
+          glowEnabled = prefs.glowEnabled !== undefined ? prefs.glowEnabled : true;
+          soundEnabled = prefs.soundEnabled !== undefined ? prefs.soundEnabled : true;
+          backgroundType = prefs.backgroundType || 'starry';
+          fireworkLocation = prefs.fireworkLocation || 'click';
+          fireworkCount = prefs.fireworkCount || 1;
+
+          if (prefs.selectedColors) {
+            prefs.selectedColors.forEach((selected, index) => {
+              if (vibrantColors[index]) {
+                vibrantColors[index].selected = selected;
+              }
+            });
+          }
+        } catch (e) {
+          console.error('Error loading preferences:', e);
+        }
+      }
+    }
+
+    // Save preferences
+    function savePreferences() {
+      const prefs = {
+        glowEnabled,
+        soundEnabled,
+        backgroundType,
+        fireworkLocation,
+        fireworkCount,
+        selectedColors: vibrantColors.map(c => c.selected)
+      };
+      localStorage.setItem('fireworksPreferences', JSON.stringify(prefs));
+    }
 
     const vibrantColors = [
       { color: '#FF1E00', selected: true },
@@ -187,6 +367,24 @@
     ];
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Firework explosion patterns
+    const explosionPatterns = ['burst', 'ring', 'spiral', 'heart', 'star', 'willow', 'double'];
+
+    // Initialize star background
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < 150; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 2 + 0.5,
+          twinkle: Math.random(),
+          brightness: Math.random()
+        });
+      }
+    }
+
 
     function generateColorOptions() {
       const container = document.getElementById('colorOptions');
@@ -204,6 +402,7 @@
           this.classList.toggle('selected');
           this.setAttribute('aria-pressed', item.selected);
           announceStatus('Color ' + item.color + ' ' + (item.selected ? 'selected' : 'deselected') + '.');
+          savePreferences();
         };
         colorOption.onkeydown = function(event) {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -217,14 +416,43 @@
       });
     }
 
+    function applyLoadedPreferences() {
+      // Apply checkbox states
+      document.getElementById('glowToggle').checked = glowEnabled;
+      document.getElementById('soundToggle').checked = soundEnabled;
+
+      // Apply background type
+      document.querySelectorAll('input[name="backgroundType"]').forEach((elem) => {
+        if (elem.value === backgroundType) {
+          elem.checked = true;
+        }
+      });
+
+      // Apply firework location
+      document.querySelectorAll('input[name="fireworkLocation"]').forEach((elem) => {
+        if (elem.value === fireworkLocation) {
+          elem.checked = true;
+        }
+      });
+
+      // Apply firework count
+      document.querySelectorAll('input[name="fireworkCount"]').forEach((elem) => {
+        if (parseInt(elem.value) === fireworkCount) {
+          elem.checked = true;
+        }
+      });
+    }
+
     document.getElementById('glowToggle').addEventListener('change', function() {
       glowEnabled = this.checked;
       announceStatus('Glow effect ' + (this.checked ? 'enabled' : 'disabled') + '.');
+      savePreferences();
     });
 
     document.getElementById('soundToggle').addEventListener('change', function() {
       soundEnabled = this.checked;
       announceStatus('Magic sounds ' + (this.checked ? 'enabled' : 'disabled') + '.');
+      savePreferences();
     });
 
     document.getElementById('toggleSettings').addEventListener('click', function() {
@@ -239,11 +467,21 @@
       }
     });
 
+    // Event listener for background type options
+    document.querySelectorAll('input[name="backgroundType"]').forEach((elem) => {
+      elem.addEventListener('change', function() {
+        backgroundType = this.value;
+        announceStatus('Background changed to ' + this.value.replace('-', ' ') + '.');
+        savePreferences();
+      });
+    });
+
     // Event listener for firework location options
     document.querySelectorAll('input[name="fireworkLocation"]').forEach((elem) => {
       elem.addEventListener('change', function() {
         fireworkLocation = this.value;
         announceStatus('Firework will appear ' + (this.value === 'click' ? 'at touch or click point.' : this.value === 'random' ? 'at random location.' : 'centered on screen.'));
+        savePreferences();
       });
     });
 
@@ -252,6 +490,7 @@
       elem.addEventListener('change', function() {
         fireworkCount = parseInt(this.value);
         announceStatus('Number of fireworks per activation set to ' + this.value + '.');
+        savePreferences();
       });
     });
 
@@ -269,20 +508,26 @@
       constructor(x, y, offsetX = 0) {
         this.x = x !== undefined ? x + offsetX : Math.random() * canvas.width;
         this.y = canvas.height;
-        this.targetY = y !== undefined ? y : canvas.height * (0.2 + Math.random() * 0.5); // Random height between 20% and 70%
+        this.targetY = y !== undefined ? y : canvas.height * (0.2 + Math.random() * 0.5);
         this.color = getRandomColor();
-        this.speed = 7 + Math.random() * 2; // Random speed between 7 and 9
+        this.speed = 7 + Math.random() * 2;
         this.size = 6;
         this.velocity = {
-          x: (offsetX / 25) + (Math.random() - 0.5) * 1.5, // Slight random horizontal velocity
-          y: -this.speed + (Math.random() - 0.5) * 0.5 // Slight random variation in vertical speed
+          x: (offsetX / 25) + (Math.random() - 0.5) * 1.5,
+          y: -this.speed + (Math.random() - 0.5) * 0.5
         };
         this.brightness = 0;
         this.alpha = 1;
-        this.pitch = 200 + Math.random() * 500; // Unique pitch for each firework
+        this.pitch = 200 + Math.random() * 500;
+        this.trail = [];
+        this.pattern = explosionPatterns[Math.floor(Math.random() * explosionPatterns.length)];
       }
 
       update() {
+        // Smaller trail for better performance
+        this.trail.push({ x: this.x, y: this.y });
+        if (this.trail.length > 5) this.trail.shift();
+
         this.x += this.velocity.x;
         this.y += this.velocity.y;
         this.brightness = Math.min(this.brightness + 0.015, 1);
@@ -295,100 +540,372 @@
       }
 
       draw() {
-        ctx.save();
-        if (glowEnabled) {
+        // Ultra-fast trail - only draw last few points
+        if (this.trail.length > 3 && glowEnabled && fireworks.length < 5) {
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = this.size * 0.6;
+          ctx.globalAlpha = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(this.trail[this.trail.length - 3].x, this.trail[this.trail.length - 3].y);
+          ctx.lineTo(this.trail[this.trail.length - 1].x, this.trail[this.trail.length - 1].y);
+          ctx.stroke();
+        }
+
+        // Draw main firework - minimal operations
+        if (glowEnabled && fireworks.length < 5) {
+          ctx.save();
           ctx.shadowColor = this.color;
           ctx.shadowBlur = 20;
         }
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+
         ctx.fillStyle = this.color;
         ctx.globalAlpha = this.alpha;
-        ctx.fill();
-        ctx.restore();
-
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
-        ctx.lineTo(this.x, this.y + 30);
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bright core
+        ctx.fillStyle = '#FFFFFF';
+        ctx.globalAlpha = this.alpha * 0.7;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (glowEnabled && fireworks.length < 5) {
+          ctx.restore();
+        }
       }
 
       explode() {
-        const particleCount = 100;
-        for (let i = 0; i < particleCount; i++) {
+        const particleCount = 180; // Increased from 150
+
+        if (this.pattern === 'burst') {
+          this.createBurst(particleCount);
+        } else if (this.pattern === 'ring') {
+          this.createRing(particleCount);
+        } else if (this.pattern === 'spiral') {
+          this.createSpiral(particleCount);
+        } else if (this.pattern === 'heart') {
+          this.createHeart(particleCount);
+        } else if (this.pattern === 'star') {
+          this.createStar(particleCount);
+        } else if (this.pattern === 'willow') {
+          this.createWillow(particleCount);
+        } else if (this.pattern === 'double') {
+          this.createDouble(particleCount);
+        }
+
+        if (soundEnabled) explodeSound(this.pitch);
+        screenShake = 10;
+      }
+
+      createBurst(count) {
+        for (let i = 0; i < count; i++) {
           if (particles.length < maxParticles) {
-            particles.push(new Particle(this.x, this.y, this.color));
+            particles.push(new Particle(this.x, this.y, this.color, 'burst'));
           }
         }
-        if (soundEnabled) explodeSound(this.pitch);
+      }
+
+      createRing(count) {
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2;
+          if (particles.length < maxParticles) {
+            particles.push(new Particle(this.x, this.y, this.color, 'ring', angle));
+          }
+        }
+      }
+
+      createSpiral(count) {
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 4;
+          if (particles.length < maxParticles) {
+            particles.push(new Particle(this.x, this.y, this.color, 'spiral', angle, i / count));
+          }
+        }
+      }
+
+      createHeart(count) {
+        for (let i = 0; i < count; i++) {
+          const t = (i / count) * Math.PI * 2;
+          if (particles.length < maxParticles) {
+            particles.push(new Particle(this.x, this.y, this.color, 'heart', t));
+          }
+        }
+      }
+
+      createStar(count) {
+        const points = 5;
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2;
+          const radius = (i % (count / points)) / (count / points);
+          if (particles.length < maxParticles) {
+            particles.push(new Particle(this.x, this.y, this.color, 'star', angle, radius));
+          }
+        }
+      }
+
+      createWillow(count) {
+        for (let i = 0; i < count; i++) {
+          if (particles.length < maxParticles) {
+            particles.push(new Particle(this.x, this.y, this.color, 'willow'));
+          }
+        }
+      }
+
+      createDouble(count) {
+        this.createBurst(count * 0.6);
+        setTimeout(() => {
+          for (let i = 0; i < count * 0.7; i++) {
+            if (particles.length < maxParticles) {
+              particles.push(new Particle(this.x, this.y, this.color, 'burst'));
+            }
+          }
+          if (soundEnabled) explodeSound(this.pitch + 200);
+        }, 250);
       }
     }
 
     class Particle {
-      constructor(x, y, color) {
+      constructor(x, y, color, pattern = 'burst', angle = null, modifier = 0) {
         this.x = x;
         this.y = y;
         this.color = color;
-        this.size = Math.random() * 8 + 4;
-        this.speed = Math.random() * 6 + 3;
-        this.angle = Math.random() * Math.PI * 2;
+        this.size = Math.random() * 10 + 5; // Bigger particles
+        this.pattern = pattern;
+        this.modifier = modifier;
+
+        // Color variation for more beauty
+        this.colorShift = Math.random() * 30 - 15; // -15 to +15 hue shift
+        this.innerColor = this.shiftColor(color, this.colorShift);
+
+        if (pattern === 'burst') {
+          this.speed = Math.random() * 10 + 7;
+          this.angle = angle !== null ? angle : Math.random() * Math.PI * 2;
+        } else if (pattern === 'ring') {
+          this.speed = 9 + Math.random() * 4;
+          this.angle = angle;
+        } else if (pattern === 'spiral') {
+          this.speed = 8 + modifier * 6; // Much faster
+          this.angle = angle;
+        } else if (pattern === 'heart') {
+          const t = angle;
+          // Scale up the heart shape significantly
+          this.heartX = 20 * Math.pow(Math.sin(t), 3); // Increased from 16
+          this.heartY = -(16 * Math.cos(t) - 6 * Math.cos(2*t) - 2.5 * Math.cos(3*t) - Math.cos(4*t)); // Scaled up
+          this.speed = 12; // Even faster - was 9
+          this.angle = Math.atan2(this.heartY, this.heartX);
+        } else if (pattern === 'star') {
+          const starSpeed = (Math.floor(angle / (Math.PI * 2 / 5)) % 2 === 0) ? 12 : 7;
+          this.speed = starSpeed + modifier * 5;
+          this.angle = angle;
+        } else if (pattern === 'willow') {
+          this.speed = Math.random() * 12 + 8; // Much faster - was 6-15
+          this.angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.5; // Wider spread
+        }
+
         this.velocity = {
           x: Math.cos(this.angle) * this.speed,
           y: Math.sin(this.angle) * this.speed
         };
-        this.gravity = 0.05;
-        this.friction = 0.99;
+        // Less gravity for heart and willow to prevent drooping
+        if (pattern === 'willow') {
+          this.gravity = 0.06; // Further reduced for bigger cascade
+          this.friction = 0.98; // Less friction for willow to travel further
+        } else if (pattern === 'heart') {
+          this.gravity = 0.02; // Even less for heart shape to maintain form
+          this.friction = 0.97; // Less friction for heart to expand more
+        } else {
+          this.gravity = 0.04;
+          this.friction = 0.975;
+        }
         this.opacity = 1;
+        this.sparkle = Math.random() > 0.7; // More sparkles
+        this.lifetime = 0;
       }
 
       update() {
+        this.lifetime++;
         this.velocity.y += this.gravity;
         this.x += this.velocity.x;
         this.y += this.velocity.y;
         this.velocity.x *= this.friction;
         this.velocity.y *= this.friction;
-        this.opacity -= 0.004;
-        this.size *= 0.995;
+
+        // Apply adaptive decay based on press frequency
+        const baseOpacityDecay = this.pattern === 'willow' ? 0.002 : 0.0025;
+        const baseSizeDecay = 0.994;
+
+        this.opacity -= baseOpacityDecay * decayMultiplier;
+        this.size *= Math.pow(baseSizeDecay, decayMultiplier);
 
         return this.opacity > 0 && this.size > 0.1;
       }
 
+      shiftColor(color, shift) {
+        // Simple color variation without full HSL conversion
+        return color;
+      }
+
       draw() {
-        ctx.save();
-        if (glowEnabled) {
+        // Aggressive performance optimization
+        const particleCount = particles.length;
+        const useGlow = glowEnabled && particleCount < 800 && (particleCount < 400 || this.sparkle);
+
+        // No save/restore when not using shadow
+        if (useGlow) {
+          ctx.save();
           ctx.shadowColor = this.color;
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = this.sparkle ? 25 : 15;
         }
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+
+        // Always use simple solid color - fastest rendering
         ctx.fillStyle = this.color;
         ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-        ctx.restore();
+
+        // Sparkle core - simple white dot
+        if (this.sparkle) {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.globalAlpha = this.opacity * 0.7;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (useGlow) {
+          ctx.restore();
+        }
       }
     }
 
     function explodeSound(pitch) {
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
+      const now = audioCtx.currentTime;
 
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
+      // Vary the sound character based on pitch to create variety
+      const soundType = Math.floor(Math.random() * 5);
 
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(pitch, audioCtx.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(pitch * 0.5, audioCtx.currentTime + 0.5);
+      // Main explosion sound with variation
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
 
-      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+      if (soundType === 0) {
+        // Classic whoosh
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(pitch, now);
+        osc1.frequency.exponentialRampToValueAtTime(pitch * 0.3, now + 0.8);
+        gain1.gain.setValueAtTime(0.25, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+      } else if (soundType === 1) {
+        // Whistling rocket
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(pitch * 1.5, now);
+        osc1.frequency.exponentialRampToValueAtTime(pitch * 0.2, now + 0.7);
+        gain1.gain.setValueAtTime(0.15, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+      } else if (soundType === 2) {
+        // Deep thump
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(pitch * 0.7, now);
+        osc1.frequency.exponentialRampToValueAtTime(pitch * 0.2, now + 1.0);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+      } else if (soundType === 3) {
+        // Bright sparkler
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(pitch * 2, now);
+        osc1.frequency.exponentialRampToValueAtTime(pitch * 0.4, now + 0.6);
+        gain1.gain.setValueAtTime(0.2, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      } else {
+        // Harmonic boom
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(pitch * 1.2, now);
+        osc1.frequency.exponentialRampToValueAtTime(pitch * 0.25, now + 0.9);
+        gain1.gain.setValueAtTime(0.18, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+      }
 
-      oscillator.start(audioCtx.currentTime);
-      oscillator.stop(audioCtx.currentTime + 0.5);
+      osc1.start(now);
+      osc1.stop(now + 1.2);
+
+      // High sparkle sound with variation
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.type = Math.random() > 0.5 ? 'triangle' : 'square';
+      const sparkleMultiplier = 1.5 + Math.random();
+      osc2.frequency.setValueAtTime(pitch * sparkleMultiplier, now);
+      osc2.frequency.exponentialRampToValueAtTime(pitch * 0.6, now + 0.5);
+      gain2.gain.setValueAtTime(0.12 + Math.random() * 0.08, now);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      osc2.start(now);
+      osc2.stop(now + 0.5);
+
+      // Deep boom with variation
+      const osc3 = audioCtx.createOscillator();
+      const gain3 = audioCtx.createGain();
+      osc3.connect(gain3);
+      gain3.connect(audioCtx.destination);
+      osc3.type = 'sine';
+      const boomFreq = 50 + Math.random() * 30;
+      osc3.frequency.setValueAtTime(boomFreq, now);
+      osc3.frequency.exponentialRampToValueAtTime(boomFreq * 0.5, now + 0.4);
+      gain3.gain.setValueAtTime(0.25 + Math.random() * 0.1, now);
+      gain3.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      osc3.start(now);
+      osc3.stop(now + 0.4);
+
+      // Crackle effect with variation
+      if (Math.random() > 0.3) {
+        const crackleDuration = 0.2 + Math.random() * 0.2;
+        const noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * crackleDuration, audioCtx.sampleRate);
+        const noiseData = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < noiseBuffer.length; i++) {
+          noiseData[i] = (Math.random() * 2 - 1) * Math.exp(-i / noiseBuffer.length * (4 + Math.random() * 3));
+        }
+        const noiseSource = audioCtx.createBufferSource();
+        const noiseGain = audioCtx.createGain();
+        const noiseFilter = audioCtx.createBiquadFilter();
+        noiseSource.buffer = noiseBuffer;
+        noiseSource.connect(noiseFilter);
+        noiseFilter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noiseFilter.type = 'highpass';
+        noiseFilter.frequency.setValueAtTime(800 + Math.random() * 400, now);
+        noiseGain.gain.setValueAtTime(0.1 + Math.random() * 0.1, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + crackleDuration);
+        noiseSource.start(now);
+      }
+    }
+
+    function updatePressFrequency() {
+      const now = Date.now();
+      pressTimestamps.push(now);
+
+      // Keep only presses from the last second
+      pressTimestamps = pressTimestamps.filter(timestamp => now - timestamp < 1000);
+
+      // If more than 3 presses per second, enable fast decay
+      if (pressTimestamps.length > 3) {
+        fastDecayMode = true;
+        // Scale decay based on press frequency (3-10 presses per second)
+        decayMultiplier = 1 + Math.min((pressTimestamps.length - 3) / 7, 1) * 1.5; // Max 2.5x decay
+      } else {
+        fastDecayMode = false;
+        decayMultiplier = 1;
+      }
     }
 
     function createFirework(x, y) {
+      // Update press frequency tracking
+      updatePressFrequency();
+
       let baseX, baseY;
 
       if (fireworkLocation === 'click' && x !== undefined && y !== undefined) {
@@ -399,18 +916,17 @@
         baseY = canvas.height / 2;
       } else {
         baseX = Math.random() * canvas.width;
-        baseY = undefined; // Let the Firework constructor decide targetY
+        baseY = undefined;
       }
 
-      // Calculate offsets to slightly separate fireworks
       const offsets = [];
-      const spread = 60; // Total spread in pixels
+      const spread = 60;
       const halfCount = (fireworkCount - 1) / 2;
       for (let i = 0; i < fireworkCount; i++) {
         let offset = 0;
         if (fireworkCount > 1) {
           offset = ((i - halfCount) / halfCount) * (spread / 2);
-          offset += (Math.random() - 0.5) * 20; // Add randomness
+          offset += (Math.random() - 0.5) * 20;
         }
         offsets.push(offset);
       }
@@ -420,15 +936,178 @@
       });
     }
 
+    function drawStars() {
+      if (backgroundType !== 'starry') return;
+
+      // Only update/draw stars every other frame when many particles
+      if (particles.length > 500 && time % 2 === 0) return;
+
+      // Simplified star drawing - no color variation when busy
+      const useColors = particles.length < 500;
+
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+        star.twinkle += 0.05;
+        const alpha = (0.2 + Math.sin(star.twinkle) * 0.2) * 0.5;
+
+        if (useColors) {
+          const tint = i % 5;
+          if (tint === 0) {
+            ctx.fillStyle = `rgba(200, 220, 255, ${alpha})`;
+          } else if (tint === 1) {
+            ctx.fillStyle = `rgba(255, 240, 220, ${alpha})`;
+          } else {
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+          }
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        }
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawBackground() {
+      // Beautiful gradient backgrounds
+      if (backgroundType === 'solid-black') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (backgroundType === 'solid-blue') {
+        // Deep night blue gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, 'rgba(0, 5, 30, 0.25)');
+        gradient.addColorStop(1, 'rgba(0, 15, 50, 0.2)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (backgroundType === 'solid-purple') {
+        // Twilight purple gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, 'rgba(20, 0, 40, 0.25)');
+        gradient.addColorStop(1, 'rgba(40, 10, 60, 0.2)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else if (backgroundType === 'starry') {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      drawStars();
+      drawShootingStars();
+    }
+
+    // Shooting star class
+    class ShootingStar {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height * 0.5;
+        this.length = Math.random() * 60 + 40; // Shorter, more subtle
+        this.speed = Math.random() * 6 + 8;
+        this.opacity = Math.random() * 0.2 + 0.2; // More subtle
+        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5;
+      }
+
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.opacity -= 0.01;
+
+        if (this.opacity <= 0 || this.x > canvas.width || this.y > canvas.height) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        if (backgroundType !== 'starry') return;
+
+        ctx.save();
+        const gradient = ctx.createLinearGradient(
+          this.x, this.y,
+          this.x - Math.cos(this.angle) * this.length,
+          this.y - Math.sin(this.angle) * this.length
+        );
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(
+          this.x - Math.cos(this.angle) * this.length,
+          this.y - Math.sin(this.angle) * this.length
+        );
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function drawShootingStars() {
+      if (backgroundType !== 'starry') return;
+
+      // Add shooting star every 2-3 minutes (120-180 seconds)
+      const now = Date.now();
+      const minInterval = 120000; // 2 minutes minimum
+      if (now - lastShootingStarTime > minInterval && shootingStars.length === 0 && Math.random() < 0.5) {
+        shootingStars.push(new ShootingStar());
+        lastShootingStarTime = now;
+      }
+
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        shootingStars[i].update();
+        shootingStars[i].draw();
+
+        // Remove when done
+        if (shootingStars[i].opacity <= 0) {
+          shootingStars.splice(i, 1);
+        }
+      }
+    }
+
     function animate() {
-      ctx.fillStyle = 'rgba(15, 12, 41, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      time++;
+      drawBackground();
 
-      fireworks = fireworks.filter(firework => firework.update());
-      fireworks.forEach(firework => firework.draw());
+      // Apply screen shake (skip when too many particles)
+      if (screenShake > 0 && particles.length < 1000) {
+        ctx.save();
+        const shakeX = (Math.random() - 0.5) * screenShake;
+        const shakeY = (Math.random() - 0.5) * screenShake;
+        ctx.translate(shakeX, shakeY);
+        screenShake *= 0.9;
+        if (screenShake < 0.1) screenShake = 0;
+      } else if (screenShake > 0) {
+        screenShake *= 0.9;
+        if (screenShake < 0.1) screenShake = 0;
+      }
 
-      particles = particles.filter(particle => particle.update());
-      particles.forEach(particle => particle.draw());
+      // Update and draw fireworks
+      for (let i = fireworks.length - 1; i >= 0; i--) {
+        if (!fireworks[i].update()) {
+          fireworks.splice(i, 1);
+        } else {
+          fireworks[i].draw();
+        }
+      }
+
+      // Update and draw particles (optimized loop)
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (!particles[i].update()) {
+          particles.splice(i, 1);
+        } else {
+          particles[i].draw();
+        }
+      }
+
+      if (screenShake > 0 && particles.length < 1000) {
+        ctx.restore();
+      }
 
       requestAnimationFrame(animate);
     }
@@ -456,7 +1135,10 @@
       canvas.height = window.innerHeight;
     });
 
+    loadPreferences();
     generateColorOptions();
+    applyLoadedPreferences();
+    initStars();
     animate();
   </script>
 </body>
